@@ -1,0 +1,29 @@
+# MacOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# GoLand IDE
+.idea/
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go build output
+*.o
+*.a
+
+# Go test and benchmarking files
+*_test.go
+
+# Compiled Go files
+*.test
+*.out
+
+# Go workspace file
+go.work
+
