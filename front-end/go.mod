@@ -1,3 +1,3 @@
-module github.com/argonautts/microservices/front-end
+module frontend
 
-go 1.21
+go 1.18
