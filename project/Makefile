@@ -36,7 +36,6 @@ build_front:
 ## start: starts the front end
 start: build_front
 	@echo "Starting front end"
-	cd ../front-end && go build -o ${FRONT_END_BINARY} ./cmd/web
 	cd ../front-end && ./${FRONT_END_BINARY} &
 
 ## stop: stop the front end
