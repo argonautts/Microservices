@@ -27,3 +27,38 @@
 # Go workspace file
 go.work
 
+# Global excludes across all subdirectories
+*.obj
+*.bc
+*.so.[0-9]
+*.so.[0-9].[0-9]
+*.so.[0-9].[0-9][0-9]
+*.exp
+*.mo
+*.pot
+objfiles.txt
+.deps/
+*.gcno
+*.gcda
+*.gcov
+*.gcov.out
+lcov*.info
+coverage/
+coverage-html-stamp
+*.vcproj
+*.vcxproj
+win32ver.rc
+lib*dll.def
+lib*.pc
+
+# Local excludes in root directory
+/GNUmakefile
+/config.cache
+/config.log
+/config.status
+/pgsql.sln
+/pgsql.sln.cache
+/Debug/
+/Release/
+/tmp_install/
+/portlock/

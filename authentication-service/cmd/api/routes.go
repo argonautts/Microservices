@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/go-chi/cors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func (app *Config) routes() http.Handler {
