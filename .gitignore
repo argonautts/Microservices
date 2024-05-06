@@ -62,3 +62,4 @@ lib*.pc
 /Release/
 /tmp_install/
 /portlock/
+/project/db-data/
