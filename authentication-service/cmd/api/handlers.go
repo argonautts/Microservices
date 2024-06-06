@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// Authenticate accepts a json payload and attempts to authenticate a user
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload struct {
 		Email    string `json:"email"`
@@ -16,37 +17,43 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	// validate the user against the database
+	// validate against database
 	user, err := app.Models.User.GetByEmail(requestPayload.Email)
 	if err != nil {
-		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		_ = app.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 
 	valid, err := user.PasswordMatches(requestPayload.Password)
 	if err != nil || !valid {
-		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		_ = app.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 
-	// log authentication
+	// log request
 	err = app.logRequest("authentication", fmt.Sprintf("%s logged in", user.Email))
 	if err != nil {
-		app.errorJSON(w, err)
-		return
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 	}
 
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Logged in user %s", user.Email),
-		Data:    user,
+		Message: fmt.Sprintf("Logged in user %s", requestPayload.Email),
+		//Data: User{
+		//	ID:        1,
+		//	FirstName: "Jack",
+		//	LastName:  "Smith",
+		//	Email:     "jack@smith.com",
+		//	Active:    1,
+		//},
+		Data: user,
 	}
 
-	app.writeJSON(w, http.StatusAccepted, payload)
+	_ = app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 func (app *Config) logRequest(name, data string) error {
@@ -54,7 +61,6 @@ func (app *Config) logRequest(name, data string) error {
 		Name string `json:"name"`
 		Data string `json:"data"`
 	}
-
 	entry.Name = name
 	entry.Data = data
 
@@ -62,9 +68,7 @@ func (app *Config) logRequest(name, data string) error {
 	logServiceURL := "http://logger-service/log"
 
 	request, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return err
-	}
+	request.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	_, err = client.Do(request)
